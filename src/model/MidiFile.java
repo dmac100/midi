@@ -1,12 +1,21 @@
 package model;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.sound.midi.*;
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MetaMessage;
+import javax.sound.midi.MidiEvent;
+import javax.sound.midi.MidiMessage;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.Sequence;
+import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Track;
 
 /**
  * Class to store pitch and channel to identify note-on / note-off pairs.
@@ -65,19 +74,19 @@ public class MidiFile {
 				int time = (int) event.getTick();
 
 				MidiMessage message = event.getMessage();
-
+				
 				// Find midi message type.
 				if (message instanceof ShortMessage) {
 					ShortMessage shortMessage = (ShortMessage)message;
-
+					
 					if (shortMessage.getCommand() == ShortMessage.NOTE_ON) {
-						noteOn(t, shortMessage, time - 16);
+						noteOn(t, shortMessage, time);
 					} else if (shortMessage.getCommand() == ShortMessage.NOTE_OFF) {
-						noteOff(t, shortMessage, time - 16);
+						noteOff(t, shortMessage, time);
 					}
 				} else if(message instanceof MetaMessage) {
 					MetaMessage metaMessage = (MetaMessage)message;
-
+					
 					// Track name change event.
 					if(metaMessage.getType() == 3) {
 						// Update track name from data.
