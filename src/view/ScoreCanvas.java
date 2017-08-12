@@ -104,7 +104,7 @@ public class ScoreCanvas {
 				int x2 = (x - position) * 2 / scale;
 				
 				x2 += 80;
-				if(x2 < 80) continue;
+				if(x2 < staffMargin + 80) continue;
 				if(x2 > totalWidth - staffMargin * 2 - 5) continue;
 				
 				gc.drawLine(x2, staffStart, x2, staffStart + 9 * lineSpacing + staffSpacing);
