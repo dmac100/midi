@@ -5,12 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.List;
 
-import model.MidiFile;
-import model.MidiTrack;
-import model.Note;
-import model.Pitch;
-import model.TimeSignature;
-
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
@@ -27,6 +21,12 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+
+import model.MidiFile;
+import model.MidiTrack;
+import model.Note;
+import model.Pitch;
+import model.TimeSignature;
 
 public class ScoreCanvas {
 	private Colors colors;
@@ -157,7 +157,7 @@ public class ScoreCanvas {
 	 */
 	private void drawNote(GC gc, int x, Pitch pitch) {
 		// Set initial position to middle C.
-		int noteHeadY = staffMargin + lineSpacing * 7 - 1;
+		int noteHeadY = staffStart + lineSpacing * 5;
 		
 		if(pitch.isAbove(middleC.nextSemitone())) {
 			int steps = pitch.getStaffPosition();
@@ -166,31 +166,29 @@ public class ScoreCanvas {
 			noteHeadY -= (lineSpacing * steps) / 2;
 			
 			// Add ledger lines above treble staff.
-			for(int y = staffStart; y > noteHeadY; y -= lineSpacing) {
-				gc.drawLine(x - 6, y, x + 4, y);
+			for(int y = staffStart; y >= noteHeadY; y -= lineSpacing) {
+				gc.drawLine(x - 6, y, x + 6, y);
 			}
 		} else if(pitch.equals(middleC) || pitch.equals(middleC.nextSemitone())) {
-			noteHeadY += 1;
-			
 			// Add ledger line for middle C / C#.
-			gc.drawLine(x - 6, noteHeadY + 1, x + 4, noteHeadY + 1);
+			gc.drawLine(x - 6, noteHeadY, x + 6, noteHeadY);
 		} else {
 			int steps = pitch.getStaffPosition();
 			
 			// Adjust for gap between staffs.
-			noteHeadY += staffSpacing - lineSpacing - lineSpacing / 2 + 2;
+			noteHeadY += staffSpacing - lineSpacing;
 			
 			// Adjust note position.
-			noteHeadY -= (lineSpacing * steps) / 2 - 2;
+			noteHeadY -= (lineSpacing * steps) / 2;
 			
 			// Add ledger lines below bass staff.
-			for(int y = staffStart + lineSpacing * 10 + staffSpacing; y < noteHeadY + 2; y += lineSpacing) {
-				gc.drawLine(x - 6, y - 1, x + 4, y - 1);
+			for(int y = staffStart + lineSpacing * 10 + staffSpacing; y <= noteHeadY; y += lineSpacing) {
+				gc.drawLine(x - 6, y, x + 6, y);
 			}
 		}
 		
 		// Draw note head.
-		gc.drawImage(noteHeadImage, x - 10, (int)(noteHeadY + 2.5f) - 10);
+		gc.drawImage(noteHeadImage, x - 10, (int)(noteHeadY) - 10);
 		
 		// Draw sharp if necessary.
 		if(pitch.isBlackKey()) {
@@ -206,7 +204,7 @@ public class ScoreCanvas {
 		Image image = new Image(getWidget().getDisplay(), 20, 20);
 		
 		Transform transform = new Transform(getWidget().getDisplay());
-		transform.translate(10, 10);
+		transform.translate(11, 11);
 		transform.rotate(-35f);
 		transform.scale(1, 1.2f);
 		
