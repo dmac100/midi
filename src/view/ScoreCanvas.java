@@ -93,8 +93,8 @@ public class ScoreCanvas {
 		
 		if(midiFile != null) {
 			// Draw time signatures.
-			drawTimeSignature(gc, 60, staffStart);
-			drawTimeSignature(gc, 60, staffStart + lineSpacing * 5 + staffSpacing);
+			drawTimeSignature(gc, staffMargin + 55, staffStart);
+			drawTimeSignature(gc, staffMargin + 55, staffStart + lineSpacing * 5 + staffSpacing);
 
 			// Draw bar lines.
 			TimeSignature timeSignature = midiFile.getTimeSignature();
